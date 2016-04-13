@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+  <title> D3 Practice4</title>
+  <script src="d3lib.js"></script>
+</head>
+<body>
+  <p>First para</p>
+
+  <script>
+
+    var canvas = d3.select("body")
+                  .append("svg")
+                  .attr("height",500)
+                  .attr("width",500);
+
+    var circle = canvas.append("circle")
+                      .attr("cx",50)
+                      .attr("cy",50)
+                      .attr("r",25);
+
+    circle.transition()
+          .delay(2000)//time befire starting
+          .duration(1000)
+          .attr("cx",250)
+          .transition()
+          .attr("cy",200)
+          .transition()
+          .attr("cx",50)
+          .attr("r",50)
+          .transition()
+          .attr("cy",50)
+          .each("start",function (){ d3.select(this).attr("fill","red"); })//each is event listener
+          .each("end",function (){ d3.select(this).attr("fill","green"); });
+
+  </script>
+</body>
+</html>

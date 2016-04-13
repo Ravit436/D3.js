@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+  <title> D3 Practice1</title>
+  <script src="d3lib.js"></script>
+</head>
+<body>
+  <p>Histogram Layout</p>
+
+  <script>
+
+      var height=500,width=500,padding=50;
+
+      var canvas = d3.select("body")
+                    .append("svg")
+                    .attr("height",height)
+                    .attr("width",width);
+
+      d3.csv("mydata2.csv",function (data)
+      {
+
+        var map = data.map(function (val){ return parseInt(val.age); });//return a new array based on criteria
+        var histogram = d3.layout.histogram()
+                          .bins(7)//number of intervals
+                          (map);//from where data is coming form
+                          //dx = size of intervals, x = lower bound, y = number of values
+
+        var y = d3.scale.linear()
+                  .domain([0,d3.max(histogram.map(function (val){ return val.length; }))])
+                  .range([0,height]);
+
+        var x = d3.scale.linear()
+                  .domain([0,d3.max(map)])
+                  .range([0,width]);
+
+        var bars = canvas.selectAll(".bar")
+                        .data(histogram)
+                        .enter()
+                          .append("g");
+
+        bars.append("rect")
+            .attr("x",function (val){ return val.x; })
+            .attr("y",0)
+            .attr("width",function (val){ return x(val.dx); })
+            .attr("height",function (val){ return y(val.y); })
+            .attr("fill","blue");
+
+      });
+
+
+  </script>
+</body>
+</html>

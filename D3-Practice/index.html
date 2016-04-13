@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+  <title> D3 Practice</title>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+</head>
+<body>
+  <p>First para</p>
+  <script>
+    d3.select("p").text("Edited para");
+    d3.select("body")
+      .append("p")
+      .style("color","blue")
+      .text("Para appended");
+    d3.select("body")
+        .append("p")
+        .text("New Para appended");
+      var canvas = d3.select("body")
+                    .append("svg")//container is required to draw svg shape lika canvas
+                    .attr("height",500)
+                    .attr("width",500);
+                    
+      //creating circle
+      var circle = canvas.append("circle")
+                        .attr("cx",150)//horizontal
+                        .attr("cy",100)
+                        .attr("r",50)
+                        .attr("fill","green");
+
+      //creating rect
+      var rect = canvas.append("rect")
+                      .attr("width",150)//horizontal
+                      .attr("height",100)
+                      .attr("fill","yellow");
+
+      //creating line
+      var line = canvas.append("line")
+                      .attr("x1",50)
+                      .attr("y1",100)
+                      .attr("x2",450)
+                      .attr("y2",400)
+                      .attr("stroke","red")
+                      .attr("stroke-width",5);
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+  <title> D3 Practice2</title>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+</head>
+<body>
+  <p>First para</p>
+  <script>
+
+      var dataArray = [20,40,60,50];
+      var width=500,height=500;
+
+      var widthScale = d3.scale.linear()
+                              .domain([0,60])//input min to max
+                              .range([0, width]);//output min to max
+
+      var color = d3.scale.linear()
+                        .domain([0,60])//input min to max
+                        .range(["red","blue"]);//output min to max
+
+      var axis = d3.svg.axis()
+                      .ticks(5)//number of numbers in axis
+                      .scale(widthScale);//scale the width automatically
+
+      var canvas = d3.select("body")
+                    .append("svg")//container is required to draw svg shape lika canvas
+                    .attr("height",height)
+                    .attr("width",width)
+                    .append("g")//everthing is enclosed in a group
+                    .attr("transform","translate(20,10)");
+
+      //creating bar graph
+      var bars = canvas.selectAll("rect")//slect all of this rect type
+                      .data(dataArray)//connect or bind data
+                      .enter()//gives you a virtual selection
+                        .append("rect")
+                        .attr("width",function(val){ return widthScale(val); })
+                        .attr("height",50)
+                        .attr("fill",function(val){ return color(val); })
+                        .attr("y",function(val,i){ return 100*i; });
+
+      canvas.append("g")
+            .attr("transform","translate(0,400)")
+            .call(axis);//call the axis
+
+  </script>
+</body>
+</html>

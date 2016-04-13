@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+  <title> D3 Practice7</title>
+  <script src="d3lib.js"></script>
+</head>
+<body>
+  <p>Donut Chart using Graphs</p>
+
+  <script>
+
+      var data = [20,60,80,50];
+
+      var canvas = d3.select("body")
+                    .append("svg")
+                    .attr("height",1000)
+                    .attr("width",1000);
+
+      var r = 300;
+      var p = Math.PI*2;//parameter is always 6.28
+
+      var color = d3.scale.ordinal()//anything that is not a continuous values
+                    .range(["red","blue","orange","green"]);
+
+      var group = canvas.append("g")//store visualization
+                        .attr("transform","translate(300,300)");
+
+      var arc = d3.svg.arc()//arc path generator
+                  .innerRadius(r-100)//for pie chart set it to 0
+                  .outerRadius(r);
+
+      var pie = d3.layout.pie()
+                  .value(function (val){ return val; });
+
+      var newArc = group.selectAll(".arc")
+                        .data(pie(data))//start angle and end angle
+                        .enter()
+                          .append("g")
+                          .attr("class","arc");
+
+      newArc.append("path")
+            .attr("d",arc)
+            .attr("fill",function (val){ return color(val.data); });
+
+      newArc.append("text")
+            .attr("transform",function (val){ return "translate("+arc.centroid(val)+")"; })
+            .attr("font-anchor","middle")
+            .attr("font-size","1.5em")
+            .text(function (val){ return val.data; });
+
+
+  </script>
+</body>
+</html>

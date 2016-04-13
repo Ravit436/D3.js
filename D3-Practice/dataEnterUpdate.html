@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+  <title> D3 Practice3</title>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+</head>
+<body>
+  <p>First para</p>
+
+  <p>  DOM elements < data elements (enter) then remaining data elements will be assigned that are not bound</p>
+  <p>  DOM elements > data elements (exit) then in exit change will be reflected for additional DOM elements</p>
+  <p>  DOM elements = data elements (update) them no change</p>
+  <script>
+    var dataArray = [20,60];
+
+    var canvas = d3.select("body")
+                  .append("svg")
+                  .attr("height",500)
+                  .attr("width",500);
+
+    var circle = canvas.append("circle")
+                      .attr("cx",50)
+                      .attr("cy",50)
+                      .attr("r",25);
+
+    var circle = canvas.selectAll("circle")
+                      .data(dataArray)
+                      .attr("fill","green")//update
+                      .enter()//enter
+                        .append("circle")
+                        .attr("cx",50)
+                        .attr("cy",150)
+                        .attr("r",50)
+                      .exit()//dont include enter and exit 
+                        .attr("fill","blue");
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+  <title> D3 Practice8</title>
+  <script src="d3lib.js"></script>
+</head>
+<body>
+  <p>Tree Layout</p>
+
+  <script>
+
+      var canvas = d3.select("body")
+                    .append("svg")
+                    .attr("height",500)
+                    .attr("width",500)
+                    .append("g")
+                      .attr("transform","translate(50,50)");
+
+      var diagonal = d3.svg.diagonal();//2bjects:- source object - starting path, target object - ending path
+
+      var tree = d3.layout.tree()
+                    .size([400,400]);
+
+      d3.json("mydata2.json",function (data){
+
+          var nodes = tree.nodes(data);//contains x and y values
+          var links = tree.links(nodes);//joining nodes
+
+          var node = canvas.selectAll(".node")
+                          .data(nodes)
+                          .enter()
+                            .append("g")
+                            .attr("class","node")
+                            .attr("transform",function (val){ return "translate("+val.x+","+val.y+")"; });
+
+          node.append("circle")
+              .attr("r",10)
+              .attr("color","steelblue");
+
+          node.append("text")
+              .text(function (val){ return val.name; });
+
+          canvas.selectAll(".link")
+                .data(links)
+                .enter()
+                  .append("path")
+                  .attr("fill","none")
+                  .attr("class","link")
+                  .attr("stroke","red")
+                  .attr("d",diagonal);
+
+      });
+
+      /*canvas.append("path")
+            .attr("fill","none")
+            .attr("stroke","red")
+            .attr("d",diagonal);*/
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+  <title> D3 Practice5</title>
+  <script src="d3lib.js"></script>
+</head>
+<body>
+  <p>Fetch Data</p>
+
+  <script>
+
+    d3.json("mydata.json",function (data)
+    {
+      var canvas = d3.select("body")
+                    .append("svg")
+                    .attr("height",500)
+                    .attr("width",500);
+
+      canvas.selectAll("rect")// to display graph by age in bars
+            .data(data)
+            .enter()
+              .append("rect")
+              .attr("width",function (val) { return val.age*10; })
+              .attr("height",50)
+              .attr("fill","blue")
+              .attr("y",function (val,i) {return i*100; });
+
+      canvas.selectAll("text")//to display name in text format
+            .data(data)
+            .enter()
+              .append("text")
+              .attr("y",function (val,i) {return i*100+20; })
+              .text(function (val) { return val.name; });//get name
+
+    });
+
+  </script>
+</body>
+</html>

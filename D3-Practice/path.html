@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+  <title> D3 Practice6</title>
+  <script src="d3lib.js"></script>
+</head>
+<body>
+  <p>Path for line graph</p>
+
+  <script>
+
+      var canvas = d3.select("body")
+                    .append("svg")
+                    .attr("height",500)
+                    .attr("width",500);
+
+      var data = [
+        {x:10,y:20},
+        {x:40,y:60},
+        {x:60,y:70},
+        {x:30,y:90}
+      ];//data
+
+      var group = canvas.append("g")
+                        .attr("transform","translate(100,100)");
+
+      var line = d3.svg.line()//line path generator
+                  .x(function (val){ return val.x; })//x coordinate of line
+                  .y(function (val){ return val.y; });//y coordinate of line
+
+      group.selectAll("path")
+            .data([data])//pass data as in single array
+            .enter()
+              .append("path")
+              .attr("d",line)//path data is stored in d attribute
+              .attr("fill","none")
+              .attr("stroke","blue")
+              .attr("stroke-width",5);
+
+  </script>
+</body>
+</html>
