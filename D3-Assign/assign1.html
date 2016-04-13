@@ -1,1 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bar Chart</title>
+  <style>
+form {
+     border: 1px solid black;
+     padding : 0.5em;
+}
+</style>
+</head>
+<body>
+  <h1 align="center">Bar Chart</h1>
+    <form>
+      <table align="center">
+        <tr>
+          <td>Region : </td>
+          <td>
+            <select id="region" name="regionName"  required onchange="showBy()">
+              <option selected value="select"> Select the region... </option>
+              <option value="country"> Country </option>
+              <option value="state"> State </option>
+              <option value="district"> District </option>
+              <option value="block"> Block </option>
+              <option value="panchayat"> Panchayat </option>
+              <option value="villages"> Villages </option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>Time : </td>
+          <td>
+            <select id="time" name="timeName"  required onchange="showBy()">
+              <option selected value="select"> Select the time... </option>
+              <option value="century"> Century </option>
+              <option value="decade"> Decade </option>
+              <option value="year"> Year </option>
+              <option value="month"> Month </option>
+              <option value="day"> Day </option>
+            </select>
+          </td>
+      </table>
+      <p id="showing" align="center"></p>
+    </form>
+    <script type="text/javascript">
+    function showBy()
+    {
+      var xShows = null, yShows = null;
+      var region = document.getElementById("region").value;
+      var time = document.getElementById("time").value;
+      var showing = document.getElementById("showing");
+      if(region == "country")
+      {
+        yShows = "states";
+      }
+      else if(region == "states")
+      {
+        yShows = "district";
+      }
+      else if(region == "district")
+      {
+        yShows = "block";
+      }
+      else if(region == "block")
+      {
+        yShows = "panchayat";
+      }
+      else if(region == "panchayat")
+      {
+        yShows = "villages";
+      }
 
+      if(time == "century")
+      {
+        xShows = "centuries";
+      }
+      else if(time == "decade")
+      {
+        xShows = "decades";
+      }
+      else if(time == "year")
+      {
+        xShows = "years";
+      }
+      else if(time == "month")
+      {
+        xShows = "months";
+      }
+      else if(time == "day")
+      {
+        xShows = "days";
+      }
+
+      if(region != "select" && time != "select")
+      {
+        showing.innerHTML = "Shows : "+xShows+" in x-axis and "+yShows+" in y-axis.";
+      }
+      else {
+        showing.innerHTML = "";
+      }
+
+    }
+    </script>
+</body>
+</html>
