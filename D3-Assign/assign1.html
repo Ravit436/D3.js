@@ -4,11 +4,11 @@
   <title>Bar Chart</title>
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <style>
-table {
+  table {
      border: 1px solid black;
      padding : 0.5em;
-}
-</style>
+   }
+  </style>
 </head>
 <body>
   <h1 align="center">Bar Chart</h1>
@@ -49,47 +49,9 @@ table {
       var region = document.getElementById("region").value;
       var time = document.getElementById("time").value;
       var showing = document.getElementById("showing");
-      if(region == "country")
-      {
-        yShows = "states";
-      }
-      else if(region == "states")
-      {
-        yShows = "district";
-      }
-      else if(region == "district")
-      {
-        yShows = "block";
-      }
-      else if(region == "block")
-      {
-        yShows = "panchayat";
-      }
-      else if(region == "panchayat")
-      {
-        yShows = "villages";
-      }
 
-      if(time == "century")
-      {
-        xShows = "centuries";
-      }
-      else if(time == "decade")
-      {
-        xShows = "decades";
-      }
-      else if(time == "year")
-      {
-        xShows = "years";
-      }
-      else if(time == "month")
-      {
-        xShows = "months";
-      }
-      else if(time == "day")
-      {
-        xShows = "days";
-      }
+      xShows = showTime(time);
+      yShows = showRegion(region);
 
       if(region != "select" && time != "select")
       {
@@ -100,6 +62,33 @@ table {
       }
 
     }
+
+      function showTime (value)
+      {
+        var timeIn =
+        {
+          'century': 'centuries',
+          'decade': 'decades',
+          'year': 'years',
+          'month': 'months',
+          'day': 'days'
+        };
+        return timeIn[value];
+      }
+
+      function showRegion (value)
+      {
+        var regionIn =
+        {
+          'country': 'states',
+          'state': 'districts',
+          'district': 'blocks',
+          'block': 'panchayats',
+          'panchayat': 'villages'
+        };
+        return regionIn[value];
+      }
+
     </script>
 </body>
 </html>
