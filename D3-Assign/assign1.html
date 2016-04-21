@@ -3,6 +3,7 @@
 <head>
   <title>Bar Chart</title>
   <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="assign1js.js"></script>
   <style>
   table {
      border: 1px solid black;
@@ -17,20 +18,20 @@
         <tr>
           <td>Region : </td>
           <td>
-            <select id="region" name="regionName"  required onchange="showBy()">
+            <select id="region" name="regionName"  required>
               <option selected value="select"> Select the region... </option>
-              <option value="country"> Country </option>
               <option value="state"> State </option>
               <option value="district"> District </option>
               <option value="block"> Block </option>
               <option value="panchayat"> Panchayat </option>
+              <option value="village"> Village </option>
             </select>
           </td>
         </tr>
         <tr>
           <td>Time : </td>
           <td>
-            <select id="time" name="timeName"  required onchange="showBy()">
+            <select id="time" name="timeName"  required>
               <option selected value="select"> Select the time... </option>
               <option value="century"> Century </option>
               <option value="decade"> Decade </option>
@@ -39,56 +40,15 @@
               <option value="day"> Day </option>
             </select>
           </td>
+          <tr>
+            <td>Region Name : </td>
+            <td><input type="text" id="regionname" maxlength=30 required></td>
+          </tr>
       </table>
+      <div align="center">
+        <input type="button" value="Search" onclick="showBy()">
+      </div>
       <p id="showing" align="center"></p>
     </form>
-    <script type="text/javascript">
-    function showBy()
-    {
-      var xShows = null, yShows = null;
-      var region = document.getElementById("region").value;
-      var time = document.getElementById("time").value;
-      var showing = document.getElementById("showing");
-
-      xShows = showTime(time);
-      yShows = showRegion(region);
-
-      if(region != "select" && time != "select")
-      {
-        showing.innerHTML = "Shows : "+xShows+" in x-axis and "+yShows+" in y-axis.";
-      }
-      else {
-        showing.innerHTML = "";
-      }
-
-    }
-
-      function showTime (value)
-      {
-        var timeIn =
-        {
-          'century': 'centuries',
-          'decade': 'decades',
-          'year': 'years',
-          'month': 'months',
-          'day': 'days'
-        };
-        return timeIn[value];
-      }
-
-      function showRegion (value)
-      {
-        var regionIn =
-        {
-          'country': 'states',
-          'state': 'districts',
-          'district': 'blocks',
-          'block': 'panchayats',
-          'panchayat': 'villages'
-        };
-        return regionIn[value];
-      }
-
-    </script>
 </body>
 </html>
