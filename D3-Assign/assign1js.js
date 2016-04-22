@@ -1,5 +1,3 @@
-
-
 var margin = {top: 50, right: 50, bottom: 100, left: 50},
     width = 800 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
@@ -10,46 +8,154 @@ var svg = d3.select("body").append("svg")
             .append("g")
               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+var	parseDate = d3.time.format("%d-%m-%Y");
+
+var x = d3.scale.ordinal()
+          .rangeRoundBands([0, width], .05);
+
+var y = d3.scale.linear()
+          .range([height, 0])
+          .domain([0,100]);
+
+var xAxis = d3.svg.axis()
+              .scale(x)
+              .orient("bottom")
+              .tickFormat(d3.time.format("%d-%m-%Y"));
+
+var yAxis = d3.svg.axis()
+              .scale(y)
+              .orient("left")
+              .ticks(10);
+
+svg.append("g")
+   .attr("class", "x axis")
+   .attr("transform", "translate(0," + height + ")")
+   .call(xAxis)
+   .selectAll("text")
+    .style("text-anchor", "end")
+    .attr("dx", "-.8em")
+    .attr("dy", "-.5em")
+    .attr("transform", "rotate(-90)" );
+
+svg.append("g")
+   .attr("class", "y axis")
+   .call(yAxis)
+   .append("text")
+   .attr("transform", "rotate(-90)")
+   .attr("y", 6)
+   .attr("dy", ".7em")
+   .style("text-anchor", "end")
+   .text("Literacy rate");
 
 function showBy()
 {
   var xShows = null, regionname = null;
-  var region = document.getElementById("region").value;
-  var time = document.getElementById("time").value;
   var showing = document.getElementById("showing");
+  var region = document.getElementById("region").value;
   regionname = document.getElementById("regionname").value;
-  xShows = showTime(time);
-  var searchValue;
+  var startdate = parseDate.parse(document.getElementById("startdate").value);
+  var enddate = parseDate.parse(document.getElementById("enddate").value);
+  var timeSpan = 0;
+  if(startdate.getYear() == enddate.getYear())
+    timeSpan = enddate.getDate()+1-startdate.getDate()+30*(enddate.getMonth()-startdate.getMonth());
+  else
+    timeSpan = enddate.getDate()+1-startdate.getDate()+30*(enddate.getMonth()+12-startdate.getMonth())+360*(enddate.getYear()-startdate.getYear()-1);
+  console.log(timeSpan);
+
+  var displayTime = chooseTime(timeSpan);
+  console.log(displayTime);
 
   d3.json("data.json", function(data)
   {
-    searchValue = searchRegion(region,regionname,data);
-    console.log(searchValue);
 
 
 
-  if(region != "select" && time != "select" && regionname!=null)
-  {
-    showing.innerHTML = searchValue;
-  }
-  else {
-    showing.innerHTML = "";
-  }
+    var searchValue = searchRegion(region,regionname,data);
+    var storeData;
+    if(searchValue.length > 1)
+      storeData = operation(displayTime+region,searchValue,data,startdate,enddate);
+    console.log(storeData);
+
+    x.domain(storeData.map(function(d) { return d.date; }));
+
+    svg.selectAll("bar")
+        .data(storeData)
+        .enter()
+          .append("rect")
+          .style("fill", "steelblue")
+          .attr("x", function(d) { return x(d.date); })
+          .attr("width", x.rangeBand())
+          .attr("y", function(d) { return y(d.literacy_rate); })
+          .attr("height", function(d) { return height - y(d.literacy_rate); });
+
+
+
+    if(region != "select")
+    {
+      showing.innerHTML = searchValue[0];
+    }
+    else {
+      showing.innerHTML = "";
+    }
 
   });
 }
 
-  function showTime (value)
+  function chooseTime(timeSpan)
   {
+    if(timeSpan > 0 && timeSpan <= 900)
+      return 'month';
+    else if(timeSpan > 900 && timeSpan <= 10600)
+      return 'year';
+    else if(timeSpan > 10600 && timeSpan <= 106000)
+      return 'decade';
+    else
+      return 'century';
+  }
+
+  function operation (value,id,data,startdate,enddate)
+  {
+
+    function opCenturyVillage () {
+      return "tester";
+
+    }
+
+    function opDecadeVillage () {
+      return "tester";
+    }
+
+    function opYearVillage () {
+      return "tester";
+
+    }
+
+    function opMonthVillage ()
+    {
+      var storeData=[];
+      var value = data.state[id[1]].district[id[2]].block[id[3]].panchayat[id[4]].village[id[5]];
+      console.log(value.data.length);
+      for(var i=0;i < value.data.length;i++)
+      {
+        if(parseDate.parse(value.data[i].date) >= startdate && parseDate.parse(value.data[i].date) <=enddate)
+        {
+          storeData.push({
+            "date": parseDate.parse(value.data[i].date),
+            "literacy_rate": value.data[i].val
+          });
+        }
+      }
+      return storeData;
+    }
+
     var timeIn =
     {
-      'century': 'centuries',
-      'decade': 'decades',
-      'year': 'years',
-      'month': 'months',
-      'day': 'days'
+      'centuryvillage': opCenturyVillage,
+      'decadevillage': opDecadeVillage,
+      'yearvillage': opYearVillage,
+      'monthvillage': opMonthVillage,
     };
-    return timeIn[value];
+    return timeIn[value]();
   }
 
   function searchRegion (name,value,data)
@@ -58,11 +164,10 @@ function showBy()
     {
       for(var i=0;i<data.state.length;i++)
       {
-        //console.log(data.state[i].name+" "+value);
         if(data.state[i].name == value)
-          return "state "+value+" is found";
+          return ["State "+value+" is found",i];
       }
-      return "state "+value+" is not found";
+      return ["State "+value+" is not found"];
     }
 
     function searchDistrict ()
@@ -72,10 +177,10 @@ function showBy()
         for(var j=0;j<data.state[i].district.length;j++)
         {
           if(data.state[i].district[j].name == value)
-            return "district "+value+" is found";
+            return ["District "+value+" is found",i,j];
         }
       }
-      return "district "+value+" is not found";
+      return ["District "+value+" is not found"];
     }
 
     function searchBlock ()
@@ -87,11 +192,11 @@ function showBy()
           for(var k=0;k<data.state[i].district[j].block.length;k++)
           {
             if(data.state[i].district[j].block[k].name == value)
-              return "block "+value+" is found";
+              return ["Block "+value+" is found",i,j,k];
           }
         }
       }
-      return "block "+value+" is not found";
+      return ["Block "+value+" is not found"];
     }
 
     function searchPanchayat ()
@@ -105,12 +210,12 @@ function showBy()
             for(var l=0;l<data.state[i].district[j].block[k].panchayat.length;l++)
             {
               if(data.state[i].district[j].block[k].panchayat[l].name == value)
-                return "panchayat "+value+" is found";
+                return ["Panchayat "+value+" is found",i,j,k,l];
             }
           }
         }
       }
-      return "panchayat "+value+" is not found";
+      return ["Panchayat "+value+" is not found"];
     }
 
     function searchVillage ()
@@ -126,13 +231,13 @@ function showBy()
               for(var m=0;m<data.state[i].district[j].block[k].panchayat[l].village.length;m++)
               {
                 if(data.state[i].district[j].block[k].panchayat[l].village[m].name == value)
-                  return "village "+value+" is found";
+                  return ["Village "+value+" is found",i,j,k,l,m];
               }
             }
           }
         }
       }
-      return "village "+value+" is not found";
+      return ["Village "+value+" is not found"];
     }
 
     var regionIn =
