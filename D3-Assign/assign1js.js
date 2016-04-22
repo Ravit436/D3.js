@@ -1,6 +1,7 @@
-var margin = {top: 50, right: 50, bottom: 100, left: 50},
+var storeData;
+var margin = {top: 50, right: 50, bottom: 150, left: 50},
     width = 800 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    height = 600 - margin.top - margin.bottom;
 
 var svg = d3.select("body").append("svg")
             .attr("width", width + margin.left + margin.right)
@@ -71,7 +72,7 @@ function showBy()
 
 
     var searchValue = searchRegion(region,regionname,data);
-    var storeData;
+
     if(searchValue.length > 1)
       storeData = operation(displayTime+region,searchValue,data,startdate,enddate);
     console.log(storeData);
