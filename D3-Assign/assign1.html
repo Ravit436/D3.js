@@ -2,12 +2,16 @@
 <html>
 <head>
   <title>Bar Chart</title>
-  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="d3lib.js"></script>
   <script src="assign1js.js"></script>
   <style>
   table {
      border: 1px solid black;
      padding : 0.5em;
+   }
+   svg{
+   	display:block;
+   	margin:auto;
    }
   </style>
 </head>
@@ -29,21 +33,17 @@
           </td>
         </tr>
         <tr>
-          <td>Time : </td>
-          <td>
-            <select id="time" name="timeName"  required>
-              <option selected value="select"> Select the time... </option>
-              <option value="century"> Century </option>
-              <option value="decade"> Decade </option>
-              <option value="year"> Year </option>
-              <option value="month"> Month </option>
-              <option value="day"> Day </option>
-            </select>
-          </td>
-          <tr>
-            <td>Region Name : </td>
-            <td><input type="text" id="regionname" maxlength=30 required></td>
-          </tr>
+          <td>Region Name : </td>
+          <td><input type="text" id="regionname" maxlength=30 required></td>
+        </tr>
+        <tr>
+          <td>Start Date : </td>
+          <td><input type="text" id="startdate" maxlength=30 required></td>
+        </tr>
+        <tr>
+          <td>End Date : </td>
+          <td><input type="text" id="enddate" maxlength=30 required></td>
+        </tr>
       </table>
       <div align="center">
         <input type="button" value="Search" onclick="showBy()">
