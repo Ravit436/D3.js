@@ -1,1 +1,1 @@
-Presently works for Villages
+Presently works for Villages for any time period.
