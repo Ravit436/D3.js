@@ -1,1 +1,1 @@
-Presently works for Villages for any time period.
+Assign 1 works for all regions and at any time period.
