@@ -1,4 +1,4 @@
-var storeData;
+
 var margin = {top: 50, right: 50, bottom: 150, left: 50},
     width = 800 - margin.left - margin.right,
     height = 600 - margin.top - margin.bottom;
@@ -28,25 +28,6 @@ var yAxis = d3.svg.axis()
               .orient("left")
               .ticks(10);
 
-svg.append("g")
-   .attr("class", "x axis")
-   .attr("transform", "translate(0," + height + ")")
-   .call(xAxis)
-   .selectAll("text")
-    .style("text-anchor", "end")
-    .attr("dx", "-.8em")
-    .attr("dy", "-.5em")
-    .attr("transform", "rotate(-90)" );
-
-svg.append("g")
-   .attr("class", "y axis")
-   .call(yAxis)
-   .append("text")
-   .attr("transform", "rotate(-90)")
-   .attr("y", 6)
-   .attr("dy", ".7em")
-   .style("text-anchor", "end")
-   .text("Literacy rate");
 
 function showBy()
 {
@@ -72,12 +53,34 @@ function showBy()
 
 
     var searchValue = searchRegion(region,regionname,data);
-
+    var storeData;
     if(searchValue.length > 1)
       storeData = operation(displayTime+region,searchValue,data,startdate,enddate);
+    else
+      return 0;
     console.log(storeData);
 
     x.domain(storeData.map(function(d) { return d.date; }));
+
+    svg.append("g")
+       .attr("class", "x axis")
+       .attr("transform", "translate(0," + height + ")")
+       .call(xAxis)
+       .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", "-.5em")
+        .attr("transform", "rotate(-90)" );
+
+    svg.append("g")
+       .attr("class", "y axis")
+       .call(yAxis)
+       .append("text")
+       .attr("transform", "rotate(-90)")
+       .attr("y", 6)
+       .attr("dy", ".7em")
+       .style("text-anchor", "end")
+       .text("Literacy rate");
 
     svg.selectAll("bar")
         .data(storeData)
@@ -117,28 +120,133 @@ function showBy()
   function operation (value,id,data,startdate,enddate)
   {
 
-    function opCenturyVillage () {
-      return "tester";
+    function opCenturyVillage ()
+    {
+      var storeData=[];
+      var year = Math.floor(startdate.getYear()/100);
+      var value = data.state[id[1]].district[id[2]].block[id[3]].panchayat[id[4]].village[id[5]];
+      var sum = 0, count = 0;
+      for(var i=0;i < value.data.length;i++)
+      {
+        var date = parseDate.parse(value.data[i].date);
+
+        if(parseDate.parse(value.data[i].date) >= startdate && parseDate.parse(value.data[i].date) <= enddate)
+        {
+
+          console.log(Math.floor(date.getYear()/100)+"   "+year);
+          if(Math.floor(date.getYear()/100) == year)
+          {
+            sum+=value.data[i].val;
+            count++;
+          }
+          else
+          {
+            console.log("Sum "+sum+" c" +count);
+            storeData.push({
+              "date": parseDate.parse(value.data[i-count].date),
+              "literacy_rate": sum/count
+            });
+            year++;
+            sum=value.data[i].val;
+            count=1;
+          }
+        }
+      }
+
+        storeData.push({
+          "date": parseDate.parse(value.data[i-count].date),
+          "literacy_rate": sum/count
+        });
+      return storeData;
 
     }
 
-    function opDecadeVillage () {
-      return "tester";
+    function opDecadeVillage ()
+    {
+      var storeData=[];
+      var year = Math.floor(startdate.getYear()/10);
+      var value = data.state[id[1]].district[id[2]].block[id[3]].panchayat[id[4]].village[id[5]];
+      var sum = 0, count = 0;
+      for(var i=0;i < value.data.length;i++)
+      {
+        var date = parseDate.parse(value.data[i].date);
+
+        if(parseDate.parse(value.data[i].date) >= startdate && parseDate.parse(value.data[i].date) <= enddate)
+        {
+
+          console.log(Math.floor(date.getYear()/10)+"   "+year);
+          if(Math.floor(date.getYear()/10) == year)
+          {
+            sum+=value.data[i].val;
+            count++;
+          }
+          else
+          {
+            console.log("Sum "+sum+" c" +count);
+            storeData.push({
+              "date": parseDate.parse(value.data[i-count].date),
+              "literacy_rate": sum/count
+            });
+            year++;
+            sum=value.data[i].val;
+            count=1;
+          }
+        }
+      }
+
+        storeData.push({
+          "date": parseDate.parse(value.data[i-count].date),
+          "literacy_rate": sum/count
+        });
+      return storeData;
     }
 
-    function opYearVillage () {
-      return "tester";
+    function opYearVillage ()
+    {
+      var storeData=[];
+      var year = startdate.getYear();
+      var value = data.state[id[1]].district[id[2]].block[id[3]].panchayat[id[4]].village[id[5]];
+      var sum = 0, count = 0;
+      for(var i=0;i < value.data.length;i++)
+      {
+        var date = parseDate.parse(value.data[i].date);
+
+        if(parseDate.parse(value.data[i].date) >= startdate && parseDate.parse(value.data[i].date) <= enddate)
+        {
+          if(date.getYear() == year)
+          {
+            sum+=value.data[i].val;
+            count++;
+          }
+          else
+          {
+            storeData.push({
+              "date": parseDate.parse(value.data[i-count].date),
+              "literacy_rate": sum/count
+            });
+            year++;
+            sum=value.data[i].val;
+            count=1;
+          }
+        }
+      }
+      storeData.push({
+        "date": parseDate.parse(value.data[i-count].date),
+        "literacy_rate": sum/count
+      });
+      return storeData;
 
     }
 
     function opMonthVillage ()
     {
       var storeData=[];
+      console.log(startdate.getYear()+"-"+startdate.getMonth()+"-"+startdate.getDate());
       var value = data.state[id[1]].district[id[2]].block[id[3]].panchayat[id[4]].village[id[5]];
       console.log(value.data.length);
       for(var i=0;i < value.data.length;i++)
       {
-        if(parseDate.parse(value.data[i].date) >= startdate && parseDate.parse(value.data[i].date) <=enddate)
+        if(parseDate.parse(value.data[i].date) >= startdate && parseDate.parse(value.data[i].date) <= enddate)
         {
           storeData.push({
             "date": parseDate.parse(value.data[i].date),
